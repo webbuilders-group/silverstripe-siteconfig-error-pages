@@ -13,7 +13,7 @@
     ],
     "require":
     {
-        "silverstripe/framework": "~3.3",
+        "silverstripe/cms": "~3.3",
         "webbuilders-group/silverstripe-gridfield-deleted-items": "*",
         "composer/installers": "*"
     },

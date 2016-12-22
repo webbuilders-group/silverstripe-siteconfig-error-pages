@@ -1,5 +1,7 @@
 SilverStripe SiteConfig Error Pages
 =================
+[![Build Status](https://travis-ci.org/webbuilders-group/silverstripe-siteconfig-error-pages.png?branch=master)](https://travis-ci.org/webbuilders-group/silverstripe-siteconfig-error-pages)
+
 Moves the SilverStripe Error Page management from the page tree to Settings section. In 3.5+ Error Pages are automatically hidden from the page tree.
 
 ## Maintainer Contact
