@@ -1,0 +1,28 @@
+---
+Name: siteconfig_error_pages
+After: 
+    - "framework/*"
+    - "cms/*"
+---
+CMSPageAddController:
+    extensions:
+        - "SiteConfigErrorPageCMSMain"
+
+
+CMSPageEditController:
+    extensions:
+        - "SiteConfigErrorPageCMSMain"
+
+
+CMSPageSettingsController:
+    extensions:
+        - "SiteConfigErrorPageCMSMain"
+
+
+SiteConfig:
+    extensions:
+        - "SiteConfigErrorPagesExtension"
+
+SiteTree:
+    hide_from_cms_tree:
+        - "ErrorPage"

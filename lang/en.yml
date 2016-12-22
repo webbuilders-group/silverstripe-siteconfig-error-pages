@@ -1,0 +1,9 @@
+en:
+    SiteConfigErrorPagesExtension:
+        ERROR_PAGES: "Error Pages"
+        PAGE_NAMES: "Page name"
+        ERROR_CODES: "Error Code"
+        PUBLISHEDS: "Published"
+    ErrorPageItemRequestHandler:
+        CONTENT: "Content"
+        SETTINGS: "Settings"
