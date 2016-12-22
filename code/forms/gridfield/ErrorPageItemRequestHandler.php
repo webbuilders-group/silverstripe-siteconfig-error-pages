@@ -54,6 +54,17 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $form->addExtraClass('ErrorPage-edit');
         $form->setAttribute('data-history-link', Controller::join_links(LeftAndMain::config()->url_base, CMSPageHistoryController::config()->url_segment, 'show', $this->record->ID));
         
+        
+        //Add the navigator if it doesn't exist
+        if(!$form->Fields()->fieldByName('SilverStripeNavigator')) {
+            $navField=LiteralField::create('SilverStripeNavigator', $this->getSilverStripeNavigator())->setForm($form)->setAllowHTML(true);
+            $form->Fields()->push($navField);
+             
+            $form->addExtraClass('cms-previewable');
+            $form->setTemplate('ErrorPageItemEditForm');
+        }
+        
+        
         Requirements::javascript(SITECONFIG_ERROR_PAGES_DIR.'/javascript/ErrorPageItemRequestHandler.js');
         
         return $form;
@@ -274,6 +285,27 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
      */
     public function redirectBack() {
         return $this->getToplevelController()->redirectBack();
+    }
+    
+    /**
+     * Used for preview controls, mainly links which switch between different states of the page.
+     * @return ArrayData
+     */
+    protected function getSilverStripeNavigator($segment=null) {
+        if($this->record) {
+            $navigator=new SilverStripeNavigator($this->record);
+            return $navigator->renderWith('LeftAndMain_SilverStripeNavigator');
+        }else {
+            return false;
+        }
+    }
+     
+    /**
+     * Gets the preview link
+     * @return string Link to view the record
+     */
+    public function LinkPreview() {
+        return $this->record->Link();
     }
 }
 ?>
