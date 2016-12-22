@@ -36,11 +36,9 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $form->loadDataFrom($this->record, ($this->record->ID==0 ? Form::MERGE_IGNORE_FALSEISH:Form::MERGE_DEFAULT));
         
         
-        //Set the display logic since we no longer have those hooks
-        //@TODO Get away from display logic
-//         $form->Fields()->replaceField('ParentID', DisplayLogicWrapper::create($form->Fields()->dataFieldByName('ParentID'))->displayIf('ParentType')->isEqualTo('subpage')->end());
-//         $form->Fields()->replaceField('ViewerGroups', DisplayLogicWrapper::create($form->Fields()->dataFieldByName('ViewerGroups'))->displayIf('CanViewType')->isEqualTo('OnlyTheseUsers')->end());
-//         $form->Fields()->replaceField('EditorGroups', DisplayLogicWrapper::create($form->Fields()->dataFieldByName('EditorGroups'))->displayIf('CanEditType')->isEqualTo('OnlyTheseUsers')->end());
+        $form->Fields()->dataFieldByName('ParentID')->addExtraClass('parent-id-field');
+        $form->Fields()->dataFieldByName('ViewerGroups')->addExtraClass('viewer-groups-field');
+        $form->Fields()->dataFieldByName('EditorGroups')->addExtraClass('editor-groups-field');
         
         
         $form->setActions($this->record->getCMSActions()->setForm($form));

@@ -143,5 +143,62 @@
                 }
             }
         });
+        
+        
+        /**
+         * Page Type Visibilty toggle
+         */
+        $('.ErrorPage-edit.cms-edit-form #Form_ItemEditForm_ParentType input[name=ParentType]').entwine({
+            onmatch: function() {
+                $('.ErrorPage-edit.cms-edit-form div.field.parent-id-field').hide();
+            },
+            
+            onchange: function(e) {
+                var parentPageField=$('.ErrorPage-edit.cms-edit-form div.field.parent-id-field');
+                if(this.val()=='subpage') {
+                    parentPageField.show();
+                }else {
+                    parentPageField.hide();
+                }
+            }
+        });
+        
+        
+        /**
+         * Viewer Groups Visibilty toggle
+         */
+        $('.ErrorPage-edit.cms-edit-form #Form_ItemEditForm_CanViewType input[name=CanViewType]').entwine({
+            onmatch: function() {
+                $('.ErrorPage-edit.cms-edit-form div.field.viewer-groups-field').hide();
+            },
+            
+            onchange: function(e) {
+                var viewerGroupsField=$('.ErrorPage-edit.cms-edit-form div.field.viewer-groups-field');
+                if(this.val()=='OnlyTheseUsers') {
+                    viewerGroupsField.show();
+                }else {
+                    viewerGroupsField.hide();
+                }
+            }
+        });
+        
+        
+        /**
+         * Editor Groups Visibilty toggle
+         */
+        $('.ErrorPage-edit.cms-edit-form #Form_ItemEditForm_CanEditType input[name=CanEditType]').entwine({
+            onmatch: function() {
+                $('.ErrorPage-edit.cms-edit-form div.field.editor-groups-field').hide();
+            },
+            
+            onchange: function(e) {
+                var editorGroupsField=$('.ErrorPage-edit.cms-edit-form div.field.editor-groups-field');
+                if(this.val()=='OnlyTheseUsers') {
+                    editorGroupsField.show();
+                }else {
+                    editorGroupsField.hide();
+                }
+            }
+        });
     });
 })(jQuery);
