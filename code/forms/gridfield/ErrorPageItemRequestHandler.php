@@ -155,19 +155,25 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
      * @param Form $form Submitting Form
      * @return SS_HTTPResponse
      */
-    public function revert($data, Form $form) {
-        $record=Versioned::get_one_by_stage('SiteTree', 'Live', array('"SiteTree_Live"."ID"'=>$this->record->ID));
+    public function rollback($data, Form $form) {
+        $recordID=$this->record->ID;
+        $record=Versioned::get_one_by_stage('SiteTree', 'Live', array('"SiteTree_Live"."ID"'=>$recordID));
+        $controller=$this->getToplevelController();
+        
         
         // a user can restore a page without publication rights, as it just adds a new draft state
         // (this action should just be available when page has been "deleted from draft")
         if($record && !$record->canEdit()) return Security::permissionFailure($this);
         if(!$record || !$record->ID) throw new SS_HTTPResponse_Exception("Bad record ID #$id", 404);
         
-        $record->doRevertToLive();
+        $record->doRollbackTo('Live');
         
+        Versioned::reset();
         
-        $form->sessionMessage(_t('CMSMain.RESTORED', "Restored '{title}' successfully", 'Param %s is a title', array('title'=>$record->Title)), 'good');
-        if($this->gridField->getList()->byId($this->record->ID)) {
+        $this->record=$this->gridField->getList()->byId($recordID);
+        
+        $form->sessionMessage(_t('CMSMain.ROLLEDBACKPUBv2', 'Rolled back to published version.'), 'good');
+        if($this->record) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
             return $this->edit($controller->getRequest());
@@ -261,6 +267,13 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             $controller->getRequest()->addHeader('X-Pjax', 'Content');
             return $controller->redirect($noActionURL, 302);
         }
+    }
+    
+    /**
+     * Wrapper to redirect back
+     */
+    public function redirectBack() {
+        return $this->getToplevelController()->redirectBack();
     }
 }
 ?>
