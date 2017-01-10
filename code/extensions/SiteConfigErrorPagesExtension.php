@@ -24,10 +24,12 @@ class SiteConfigErrorPagesExtension extends DataExtension {
                                 ->setDisplayFields(array(
                                                         'Title'=>_t('SiteConfigErrorPagesExtension.PAGE_NAME', 'Page name'),
                                                         'ErrorCode'=>_t('SiteConfigErrorPagesExtension.ERROR_CODE', 'Error Code'),
-                                                        'isPublished'=>_t('SiteConfigErrorPagesExtension.PUBLISHED', 'Published')
+                                                        'isPublished'=>_t('SiteConfigErrorPagesExtension.PUBLISHED', 'Published'),
+                                                        'IsModifiedOnStage'=>_t('SiteConfigErrorPagesExtension.MODIFIED', 'Modified')
                                                     ))
                                 ->setFieldCasting(array(
-                                                        'isPublished'=>'Boolean->Nice'
+                                                        'isPublished'=>'Boolean->Nice',
+                                                        'IsModifiedOnStage'=>'Boolean->Nice'
                                                     ));
         
         $gridField->getConfig()
