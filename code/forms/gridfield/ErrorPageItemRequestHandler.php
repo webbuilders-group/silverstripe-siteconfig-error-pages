@@ -2,7 +2,8 @@
 class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     private static $allowed_actions=array(
                                         'ItemEditForm',
-                                        'edit'
+                                        'edit',
+                                        'view'
                                     );
     
     /**
@@ -92,10 +93,32 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
                 return $this->getToplevelController()->getResponseNegotiator()->respond($this->getRequest());
             }
         
-            return $this->getToplevelController()->redirect($this->Link());
+            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), (class_exists('Translatable') ? '?Locale='.$this->record->Locale:'')));
         }
         
+        
+        //If translatable exists and the current locale does not match the record locale redirect
+        if(class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
+            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), '?Locale='.$this->record->Locale));
+        }
+        
+        
         return parent::edit($request);
+    }
+    
+    /**
+     * Handles request to view the error page
+     * @param SS_HTTPRequest $request HTTP Request Object
+     * @return SS_HTTPResponse
+     */
+    public function view($request) {
+        //If translatable exists and the current locale does not match the record locale redirect
+        if(class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
+            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), '?Locale='.$this->record->Locale));
+        }
+        
+        
+        return parent::view($request);
     }
     
     /**
