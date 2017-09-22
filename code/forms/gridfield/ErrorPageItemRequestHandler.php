@@ -81,6 +81,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             $addController=CMSPageAddController::create();
             $this->record=$addController->getNewItem('new-'.$this->config()->error_page_class, false);
             
+            $form=$this->ItemEditForm();
             $this->extend('updateDoAdd', $this->record, $form);
             
             $this->record->Sort=DB::query('SELECT MAX("Sort") FROM "SiteTree" WHERE "ParentID" = 0')->value() + 1;

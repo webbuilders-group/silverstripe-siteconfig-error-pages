@@ -1,8 +1,10 @@
-# Changelog
+# Change Log
 
-All notable changes to this project will be documented in this file.
+## [0.1.1](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/tree/0.1.0...0.1.1) (2017-09-22)
 
-This project adheres to [Semantic Versioning](http://semver.org/).
+## [0.1.0](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/tree/0.1.0) (2017-04-26)
+**Implemented enhancements:**
 
-
-## [0.1.0]
+- Preview Support [\#3](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/issues/3)
+- Parent ID, Viewer Groups, and Editor Groups display rules [\#2](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/issues/2)
+- Add Unit tests [\#1](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/issues/1)
