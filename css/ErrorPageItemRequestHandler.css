@@ -1,0 +1,15 @@
+.ErrorPageItemRequestHandler button#action_doDuplicate .ui-icon {
+    display: none;
+}
+
+.ErrorPageItemRequestHandler button#action_doDuplicate .ui-button-text {
+    padding-left: 1em;
+}
+
+.ErrorPageItemRequestHandler button#action_doDuplicate.loading .ui-icon {
+    display: block;
+}
+
+.ErrorPageItemRequestHandler button#action_doDuplicate.loading .ui-button-text {
+    padding-left: 2.1em;
+}

@@ -50,9 +50,15 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             }
         }
         
+        if($this->record->exists() && $this->record->canEdit() && $this->record->canCreate()) {
+            $form->Actions()->insertBefore('ActionMenus', FormAction::create('doDuplicate', _t('ErrorPageItemRequestHandler.DUPLICATE', '_Duplicate'))
+                                                                        ->setAttribute('data-icon', 'no-icon')
+                                                                        ->setUseButtonTag(true));
+        }
+        
         $form->disableDefaultAction();
         
-        $form->addExtraClass('ErrorPage-edit');
+        $form->addExtraClass('ErrorPage-edit ErrorPageItemRequestHandler');
         $form->setAttribute('data-history-link', Controller::join_links(LeftAndMain::config()->url_base, CMSPageHistoryController::config()->url_segment, 'show', $this->record->ID));
         
         
@@ -66,6 +72,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         
+        Requirements::css(SITECONFIG_ERROR_PAGES_DIR.'/css/ErrorPageItemRequestHandler.css');
         Requirements::javascript(SITECONFIG_ERROR_PAGES_DIR.'/javascript/ErrorPageItemRequestHandler.js');
         
         return $form;
@@ -240,14 +247,12 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         // Archive record
         $record->doArchive();
         
-        $message=sprintf(_t('CMSMain.ARCHIVEDPAGE',"Archived page '%s'"), $record->Title);
-        
         $toplevelController=$this->getToplevelController();
         if($toplevelController && $toplevelController instanceof LeftAndMain) {
             $backForm=$toplevelController->getEditForm();
-            $backForm->sessionMessage($message, 'good', false);
+            $backForm->sessionMessage(_t('ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
         }else {
-            $form->sessionMessage($message, 'good', false);
+            $form->sessionMessage(_t('ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
         }
         
         //when an item is deleted, redirect to the parent controller
@@ -295,6 +300,39 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
             return $this->edit($controller->getRequest());
+        }else {
+            // Changes to the record properties might've excluded the record from
+            // a filtered list, so return back to the main view if it can't be found
+            $noActionURL=$controller->removeAction($data['url']);
+            $controller->getRequest()->addHeader('X-Pjax', 'Content');
+            return $controller->redirect($noActionURL, 302);
+        }
+    }
+    
+    /**
+     * Handles duplicating an error page
+     * @param array $data Submitted Data
+     * @param Form $form Submitted Form
+     * @return SS_HTTPResponse
+     */
+    public function doDuplicate($data, Form $form) {
+        $record=$this->record;
+        $controller=$this->getToplevelController();
+        
+        if($record && (!$record->canEdit() || !$record->canCreate())) {
+            return Security::permissionFailure($this);
+        }
+        
+        if(!$record || !$record->ID) {
+            throw new SS_HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
+        }
+        
+        $this->record=$record->duplicate();
+        
+        $form->sessionMessage(_t('CMSMain.DUPLICATED', "Duplicated '{title}' successfully", array('title'=>$record->Title)), 'good');
+        
+        if($this->record) {
+            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), (class_exists('Translatable') ? '?Locale='.$this->record->Locale:'')));
         }else {
             // Changes to the record properties might've excluded the record from
             // a filtered list, so return back to the main view if it can't be found

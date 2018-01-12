@@ -8,3 +8,5 @@ en:
     ErrorPageItemRequestHandler:
         CONTENT: "Content"
         SETTINGS: "Settings"
+        ARCHIVEDPAGE: "Archived error page '{title}'"
+        DUPLICATE: "Duplicate"
