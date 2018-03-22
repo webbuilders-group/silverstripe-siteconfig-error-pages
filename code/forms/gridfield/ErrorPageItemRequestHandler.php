@@ -21,6 +21,10 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     public function ItemEditForm() {
         $form=parent::ItemEditForm();
         
+        if($form==null) {
+            return;
+        }
+        
         $editFields=$form->Fields()->fieldByName('Root')->Tabs();
         $form->setFields(new FieldList(
                                         TabSet::create('Root',
@@ -84,7 +88,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
      * @return SS_HTTPResponse
      */
     public function edit($request) {
-        if(!$this->record->exists()) {
+        if($this->record && !$this->record->exists()) {
             $addController=CMSPageAddController::create();
             $this->record=$addController->getNewItem('new-'.$this->config()->error_page_class, false);
             
@@ -106,7 +110,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         
         
         //If translatable exists and the current locale does not match the record locale redirect
-        if(class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
+        if($this->record && class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
             return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), '?Locale='.$this->record->Locale));
         }
         
