@@ -6,7 +6,7 @@ class SiteConfigErrorPagesExtension extends DataExtension {
      */
     public function updateCMSFields(FieldList $fields) {
         //Reset Versioned
-        Versioned::reset();
+        Versioned::reading_stage('Stage');
         
         
         $fields->findOrMakeTab('Root.ErrorPages', _t('SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'));
