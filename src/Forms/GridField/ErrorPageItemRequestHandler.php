@@ -289,9 +289,9 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $toplevelController=$this->getToplevelController();
         if($toplevelController && $toplevelController instanceof LeftAndMain) {
             $backForm=$toplevelController->getEditForm();
-            $backForm->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
+            $backForm->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good');
         }else {
-            $form->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
+            $form->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good');
         }
         
         //when an item is deleted, redirect to the parent controller
@@ -324,7 +324,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $record=$this->record;
         $controller=$this->getToplevelController();
         
-        if($record && !$record->canDeleteFromLive()) {
+        if($record && !$record->canUnpublish()) {
             return Security::permissionFailure($this);
         }
         

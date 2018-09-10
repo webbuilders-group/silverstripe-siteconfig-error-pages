@@ -9,7 +9,7 @@ Moves the SilverStripe Error Page management from the page tree to Settings sect
 
 
 ## Requirements
-* SilverStripe CMS 3.3+
+* SilverStripe CMS 4.0+
 * [GridField Deleted Items](https://github.com/webbuilders-group/gridfield-deleted-items)
 
 

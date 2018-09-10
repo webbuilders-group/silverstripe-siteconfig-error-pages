@@ -1,4 +1,4 @@
-ErrorPage:
+SilverStripe\ErrorPage\ErrorPage:
     page404:
         Title: "Page not found"
         MenuTitle: "Page not found"
