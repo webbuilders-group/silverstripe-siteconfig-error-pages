@@ -27,8 +27,7 @@ use WebbuildersGroup\SiteConfigErrorPages\Control\Admin\CustomSiteConfigAdmin;
 class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     private static $allowed_actions=array(
                                         'ItemEditForm',
-                                        'edit',
-                                        'view'
+                                        'edit'
                                     );
     
     /**
@@ -144,21 +143,6 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         
         
         return parent::edit($request);
-    }
-    
-    /**
-     * Handles request to view the error page
-     * @param SS_HTTPRequest $request HTTP Request Object
-     * @return SS_HTTPResponse
-     */
-    public function view($request) {
-        //If translatable exists and the current locale does not match the record locale redirect
-        if(class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
-            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), '?Locale='.$this->record->Locale));
-        }
-        
-        
-        return parent::view($request);
     }
     
     /**
