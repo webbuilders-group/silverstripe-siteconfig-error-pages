@@ -27,38 +27,12 @@
             }
         });
         
-        /**
-         * Enable save buttons upon detecting changes to content.
-         * "changed" class is added by jQuery.changetracker.
-         */
-        $('.ErrorPage-edit.cms-edit-form.changed').entwine({
-            onmatch: function(e) {
-                this.find('button[name=action_doSave]').button('option', 'showingAlternate', true);
-                this.find('button[name=action_doPublish]').button('option', 'showingAlternate', true);
-                
-                this._super(e);
-            },
-            onunmatch: function(e) {
-                var saveButton=this.find('button[name=action_save]');
-                if(saveButton.data('button')) {
-                    saveButton.button('option', 'showingAlternate', false);
-                }
-                
-                var publishButton=this.find('button[name=action_publish]');
-                if(publishButton.data('button')) {
-                    publishButton.button('option', 'showingAlternate', false);
-                }
-                
-                this._super(e);
-            }
-        });
-        
         $('.ErrorPage-edit.cms-edit-form .Actions button[name=action_publish]').entwine({
             /**
              * Bind to ssui.button event to trigger stylistic changes.
              */
             onbuttonafterrefreshalternate: function() {
-                if(this.button('option', 'showingAlternate')) {
+                if(this.data('showingAlternate')) {
                     this.addClass('ss-ui-action-constructive');
                 }else {
                     this.removeClass('ss-ui-action-constructive');
@@ -71,7 +45,7 @@
              * Bind to ssui.button event to trigger stylistic changes.
              */
             onbuttonafterrefreshalternate: function() {
-                if(this.button('option', 'showingAlternate')) {
+                if(this.data('showingAlternate')) {
                     this.addClass('ss-ui-action-constructive');
                 }else {
                     this.removeClass('ss-ui-action-constructive');
@@ -98,22 +72,74 @@
          */
         $('.ErrorPage-edit.cms-edit-form.changed').entwine({
             onmatch: function(e) {
-                this.find('button[name=action_save]').button('option', 'showingAlternate', true);
-                this.find('button[name=action_publish]').button('option', 'showingAlternate', true);
-                
+                // Update all buttons with alternate text
+                this.find('button[data-text-alternate]').each(function() {
+                    var button = $(this);
+                    var buttonTitle = button.find('.btn__title');
+                    
+                    // Set alternate-text
+                    var alternateText = button.data('textAlternate');
+                    if (alternateText) {
+                        button.data('textStandard', buttonTitle.text());
+                        buttonTitle.text(alternateText);
+                    }
+                    
+                    // Extra classes can be declared explicitly (legacy)
+                    var alternateClasses = button.data('btnAlternate');
+                    if (alternateClasses) {
+                        button.data('btnStandard', button.attr('class'));
+                        button.attr('class', alternateClasses);
+                        button
+                            .removeClass('btn-outline-secondary')
+                            .addClass('btn-primary');
+                    }
+                    
+                    // Extra classes can also be specified as add / remove
+                    var alternateClassesAdd = button.data('btnAlternateAdd');
+                    if (alternateClassesAdd) {
+                        button.addClass(alternateClassesAdd);
+                    }
+                    
+                    var alternateClassesRemove = button.data('btnAlternateRemove');
+                    if (alternateClassesRemove) {
+                        button.removeClass(alternateClassesRemove);
+                    }
+                });
+
                 this._super(e);
             },
             onunmatch: function(e) {
-                var saveButton=this.find('button[name=action_save]');
-                if(saveButton.data('button')) {
-                    saveButton.button('option', 'showingAlternate', false);
-                }
-                
-                var publishButton=this.find('button[name=action_publish]');
-                if(publishButton.data('button')) {
-                    publishButton.button('option', 'showingAlternate', false);
-                }
-                
+                this.find('button[data-text-alternate]').each(function() {
+                    var button = $(this);
+                    var buttonTitle = button.find('.btn__title');
+
+                    // Revert extra classes
+                    var standardText = button.data('textStandard');
+                    if (standardText) {
+                        buttonTitle.text(standardText);
+                    }
+
+                    // Extra classes can be declared explicitly (legacy)
+                    var standardClasses = button.data('btnStandard');
+                    if (standardClasses) {
+                        button.attr('class', standardClasses);
+                        button
+                            .addClass('btn-outline-secondary')
+                            .removeClass('btn-primary');
+                    }
+
+                    // Extra classes can also be specified as add / remove
+                    // Note: Reverse of onMatch
+                    var alternateClassesAdd = button.data('btnAlternateAdd');
+                    if (alternateClassesAdd) {
+                        button.removeClass(alternateClassesAdd);
+                    }
+                    var alternateClassesRemove = button.data('btnAlternateRemove');
+                    if (alternateClassesRemove) {
+                        button.addClass(alternateClassesRemove);
+                    }
+                });
+
                 this._super(e);
             }
         });
@@ -123,7 +149,7 @@
              * Bind to ssui.button event to trigger stylistic changes.
              */
             onbuttonafterrefreshalternate: function() {
-                if (this.button('option', 'showingAlternate')) {
+                if (this.data('showingAlternate')) {
                     this.addClass('ss-ui-action-constructive');
                 }else {
                     this.removeClass('ss-ui-action-constructive');
@@ -136,7 +162,7 @@
              * Bind to ssui.button event to trigger stylistic changes.
              */
             onbuttonafterrefreshalternate: function() {
-                if (this.button('option', 'showingAlternate')) {
+                if (this.data('showingAlternate')) {
                     this.addClass('ss-ui-action-constructive');
                 }else {
                     this.removeClass('ss-ui-action-constructive');

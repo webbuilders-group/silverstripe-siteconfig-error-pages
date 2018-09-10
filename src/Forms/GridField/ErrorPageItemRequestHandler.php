@@ -21,13 +21,13 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
-use WebbuildersGroup\SiteConfigErrorPages\Control\Admin\CustomSiteConfigAdmin;
 
 
 class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     private static $allowed_actions=array(
                                         'ItemEditForm',
-                                        'edit'
+                                        'edit',
+                                        'view'
                                     );
     
     /**
@@ -136,12 +136,6 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         
-        //If translatable exists and the current locale does not match the record locale redirect
-        if($this->record && class_exists('Translatable') && Translatable::get_current_locale()!=$this->record->Locale) {
-            return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), '?Locale='.$this->record->Locale));
-        }
-        
-        
         return parent::edit($request);
     }
     
@@ -157,42 +151,62 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     }
     
     /**
-     * Handles saving the submission
+     * Save and Publish page handler
      * @param array $data Submitted Data
      * @param Form $form Submitting Form
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
+     * @throws HTTPResponse_Exception
      */
     public function doSave($data, $form) {
         $record=$this->record;
         $controller=$this->getToplevelController();
-        
-        $record->HasBrokenLink=0;
-        $record->HasBrokenFile=0;
-        
-        if(!$record->ObsoleteClassName) {
+
+        // Check publishing permissions
+        $doPublish = !empty($data['publish']);
+        if ($record && $doPublish && !$record->canPublish()) {
+            return Security::permissionFailure($this);
+        }
+
+        // TODO Coupling to SiteTree
+        $record->HasBrokenLink = 0;
+        $record->HasBrokenFile = 0;
+
+        if (!$record->ObsoleteClassName) {
             $record->writeWithoutVersion();
         }
-        
+
         // Update the class instance if necessary
-        if(isset($data['ClassName']) && $data['ClassName']!=$record->ClassName) {
-            $newClassName=$record->ClassName;
-            // The records originally saved attribute was overwritten by $form->saveInto($record) before.
-            // This is necessary for newClassInstance() to work as expected, and trigger change detection
-            // on the ClassName attribute
-            $record->setClassName($data['ClassName']);
-            // Replace $record with a new instance
-            $record=$record->newClassInstance($newClassName);
+        if (isset($data['ClassName']) && $data['ClassName'] != $record->ClassName) {
+            // Replace $record with a new instance of the new class
+            $newClassName = $data['ClassName'];
+            $record = $record->newClassInstance($newClassName);
         }
-        
+
         // save form data into record
         $form->saveInto($record);
         $record->write();
-        
-        // If the 'Save & Publish' button was clicked, also publish the page
-        if(isset($data['publish']) && $data['publish']==1) {
-            $record->doPublish();
+
+        // If the 'Publish' button was clicked, also publish the page
+        if ($doPublish) {
+            $record->publishRecursive();
+            $message = _t(
+                CMSMain::class . '.PUBLISHED',
+                "Published '{title}' successfully.",
+                ['title' => $record->Title]
+            );
+            
+            //Reload the object to avoid confusing the actions
+            $this->record=ErrorPage::get()->byId($this->record->ID);
+        } else {
+            $message = _t(
+                CMSMain::class . '.SAVED',
+                "Saved '{title}' successfully.",
+                ['title' => $record->Title]
+            );
         }
         
+        //Set form message
+        $form->sessionMessage($message, 'good');
         
         if($this->gridField->getList()->byId($this->record->ID)) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
@@ -206,31 +220,40 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             return $controller->redirect($noActionURL, 302);
         }
     }
-    
+
     /**
      * Processes reverting staging to match the live site
      * @param array $data Submitted Data
      * @param Form $form Submitting Form
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
+     * @uses SiteTree->doRevertToLive()
+     * @throws HTTPResponse_Exception
      */
     public function rollback($data, Form $form) {
         $recordID=$this->record->ID;
-        $record=Versioned::get_one_by_stage(SiteTree::class, 'Live', array('"SiteTree_Live"."ID"'=>$recordID));
+        $record=Versioned::get_one_by_stage(SiteTree::class, Versioned::LIVE, array('"SiteTree_Live"."ID"'=>$recordID));
         $controller=$this->getToplevelController();
         
         
         // a user can restore a page without publication rights, as it just adds a new draft state
         // (this action should just be available when page has been "deleted from draft")
-        if($record && !$record->canEdit()) return Security::permissionFailure($this);
-        if(!$record || !$record->ID) throw new HTTPResponse_Exception("Bad record ID #$id", 404);
+        if($record && !$record->canEdit()) {
+            return Security::permissionFailure($this);
+        }
         
-        $record->doRollbackTo('Live');
+        if(!$record || !$record->ID) {
+            throw new HTTPResponse_Exception("Bad record ID #$recordID", 404);
+        }
+
+        $record->doRevertToLive();
         
-        Versioned::reset();
+        $form->sessionMessage(_t(
+                                CMSMain::class . '.RESTORED',
+                                "Restored '{title}' successfully",
+                                'Param {title} is a title',
+                                array('title' => $record->Title)
+                            ), 'good');
         
-        $this->record=$this->gridField->getList()->byId($recordID);
-        
-        $form->sessionMessage(_t('SilverStripe\\CMS\\Controllers\\CMSMain.ROLLEDBACKPUBv2', 'Rolled back to published version.'), 'good');
         if($this->record) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
@@ -253,7 +276,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     public function archive($data, Form $form) {
         $record=$this->record;
         if(!$record || !$record->exists()) {
-            throw new HTTPResponse_Exception("Bad record ID #".$data['id'], 404);
+            throw new HTTPResponse_Exception('Bad record ID #'.$record->ID, 404);
         }
         
         if(!$record->canArchive()) {
