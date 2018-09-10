@@ -9,27 +9,25 @@ notifications:
     secure: TNv7WYCJ1ei3wgoXtNM+/Je4ZU7fgcUSsAUQnjC8h2MIE0ImwxPC2xt5t6BR8Mi6XrPCBQ1aRjAvhSFGdYcfhWDJwU0Nq6BfynVwE4OR5/KNhZ9TvMlCQ+eRQD8qJLNqe2MWxMZcdlbrk0rNEhTDcPn3b6dz9Zuji4woe5wksxA=
 
 env:
-  - DB=MYSQL CORE_RELEASE=4.2
+  - DB=MYSQL
 
 matrix:
   include:
     - php: 5.6
-      env: DB=PGSQL CORE_RELEASE=4.2
+      env: DB=MYSQL
     - php: 5.6
-      env: DB=MYSQL CORE_RELEASE=4.2
+      env: DB=PGSQL
     - php: 5.6
-      env: DB=SQLITE3 CORE_RELEASE=4.2
-    - php: 5.6
-      env: DB=MYSQL CORE_RELEASE=4.1
+      env: DB=SQLITE3
 
 before_script:
   - composer self-update || true
   - composer validate
-  - composer require --no-update silverstripe/recipe-core:^1.1
-  - composer require --no-update phpunit/phpunit:^5.7
+  - composer require --no-update silverstripe/recipe-cms:^1.2 --prefer-dist
+  - composer require --no-update phpunit/phpunit:^5.7 --prefer-dist
   - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:2.0.x-dev --prefer-dist --no-update; fi
   - if [[ $DB == SQLITE ]]; then composer require silverstripe/sqlite3:2.1.x-dev --prefer-dist --no-update; fi
-  - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+  - composer install --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
 
 script:
   - vendor/bin/phpunit
