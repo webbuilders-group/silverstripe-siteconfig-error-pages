@@ -23,11 +23,12 @@ matrix:
 before_script:
   - composer self-update || true
   - composer validate
-  - composer require --no-update silverstripe/recipe-cms:^1.2 --prefer-dist
+  - composer require --no-update silverstripe/recipe-cms:^1.1 --prefer-dist
   - composer require --no-update phpunit/phpunit:^5.7 --prefer-dist
+  - composer require --no-update webbuilders-group/silverstripe-gridfield-deleted-items:2.0.x-dev --prefer-dist
   - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:2.0.x-dev --prefer-dist --no-update; fi
   - if [[ $DB == SQLITE ]]; then composer require silverstripe/sqlite3:2.1.x-dev --prefer-dist --no-update; fi
-  - composer install --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+  - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --stability=dev
 
 script:
   - vendor/bin/phpunit
