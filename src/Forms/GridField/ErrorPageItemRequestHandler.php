@@ -1,4 +1,27 @@
 <?php
+namespace WebbuildersGroup\SiteConfigErrorPages\Forms\GridField;
+
+use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\CMS\Controllers\CMSPageAddController;
+use SilverStripe\CMS\Controllers\CMSPageHistoryController;
+use SilverStripe\CMS\Controllers\SilverStripeNavigator;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPResponse_Exception;
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\ValidationException;
+use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\View\Requirements;
+
+
 class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     private static $allowed_actions=array(
                                         'ItemEditForm',
@@ -11,7 +34,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
      * @config ErrorPageItemRequestHandler.error_page_class
      * @var string
      */
-    private static $error_page_class='ErrorPage';
+    private static $error_page_class=ErrorPage::class;
     
     
     /**
@@ -28,8 +51,8 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $editFields=$form->Fields()->fieldByName('Root')->Tabs();
         $form->setFields(new FieldList(
                                         TabSet::create('Root',
-                                                    new TabSet('Content', _t('ErrorPageItemRequestHandler.CONTENT', 'Content')),
-                                                    new TabSet('Settings', _t('ErrorPageItemRequestHandler.SETTINGS', 'Settings'))
+                                                    new TabSet('Content', _t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.CONTENT', 'Content')),
+                                                    new TabSet('Settings', _t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.SETTINGS', 'Settings'))
                                                 )->setTemplate('CMSTabSet')
                                     ));
         
@@ -55,7 +78,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         if($this->record->exists() && $this->record->canEdit() && $this->record->canCreate()) {
-            $form->Actions()->insertBefore('ActionMenus', FormAction::create('doDuplicate', _t('ErrorPageItemRequestHandler.DUPLICATE', '_Duplicate'))
+            $form->Actions()->insertBefore('ActionMenus', FormAction::create('doDuplicate', _t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.DUPLICATE', '_Duplicate'))
                                                                         ->setAttribute('data-icon', 'no-icon')
                                                                         ->setUseButtonTag(true));
         }
@@ -67,8 +90,8 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         
         
         //Add the navigator if it doesn't exist
-        if(!$form->Fields()->fieldByName('SilverStripeNavigator')) {
-            $navField=LiteralField::create('SilverStripeNavigator', $this->getSilverStripeNavigator())->setForm($form)->setAllowHTML(true);
+        if(!$form->Fields()->fieldByName(SilverStripeNavigator::class)) {
+            $navField=LiteralField::create(SilverStripeNavigator::class, $this->getSilverStripeNavigator())->setForm($form)->setAllowHTML(true);
             $form->Fields()->push($navField);
              
             $form->addExtraClass('cms-previewable');
@@ -76,8 +99,8 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         
-        Requirements::css(SITECONFIG_ERROR_PAGES_DIR.'/css/ErrorPageItemRequestHandler.css');
-        Requirements::javascript(SITECONFIG_ERROR_PAGES_DIR.'/javascript/ErrorPageItemRequestHandler.js');
+        Requirements::css('webbuilders-group/silverstripe-siteconfig-error-pages:css/ErrorPageItemRequestHandler.css');
+        Requirements::javascript('webbuilders-group/silverstripe-siteconfig-error-pages:javascript/ErrorPageItemRequestHandler.js');
         
         return $form;
     }
@@ -203,14 +226,14 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
      */
     public function rollback($data, Form $form) {
         $recordID=$this->record->ID;
-        $record=Versioned::get_one_by_stage('SiteTree', 'Live', array('"SiteTree_Live"."ID"'=>$recordID));
+        $record=Versioned::get_one_by_stage(SiteTree::class, 'Live', array('"SiteTree_Live"."ID"'=>$recordID));
         $controller=$this->getToplevelController();
         
         
         // a user can restore a page without publication rights, as it just adds a new draft state
         // (this action should just be available when page has been "deleted from draft")
         if($record && !$record->canEdit()) return Security::permissionFailure($this);
-        if(!$record || !$record->ID) throw new SS_HTTPResponse_Exception("Bad record ID #$id", 404);
+        if(!$record || !$record->ID) throw new HTTPResponse_Exception("Bad record ID #$id", 404);
         
         $record->doRollbackTo('Live');
         
@@ -218,7 +241,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         
         $this->record=$this->gridField->getList()->byId($recordID);
         
-        $form->sessionMessage(_t('CMSMain.ROLLEDBACKPUBv2', 'Rolled back to published version.'), 'good');
+        $form->sessionMessage(_t('SilverStripe\\CMS\\Controllers\\CMSMain.ROLLEDBACKPUBv2', 'Rolled back to published version.'), 'good');
         if($this->record) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
@@ -241,7 +264,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     public function archive($data, Form $form) {
         $record=$this->record;
         if(!$record || !$record->exists()) {
-            throw new SS_HTTPResponse_Exception("Bad record ID #".$data['id'], 404);
+            throw new HTTPResponse_Exception("Bad record ID #".$data['id'], 404);
         }
         
         if(!$record->canArchive()) {
@@ -254,9 +277,9 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         $toplevelController=$this->getToplevelController();
         if($toplevelController && $toplevelController instanceof LeftAndMain) {
             $backForm=$toplevelController->getEditForm();
-            $backForm->sessionMessage(_t('ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
+            $backForm->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
         }else {
-            $form->sessionMessage(_t('ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
+            $form->sessionMessage(_t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.ARCHIVEDPAGE',"Archived error page '{title}'", array('title'=>$record->Title)), 'good', false);
         }
         
         //when an item is deleted, redirect to the parent controller
@@ -294,12 +317,12 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         if(!$record || !$record->ID) {
-            throw new SS_HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
+            throw new HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
         }
         
         $record->doUnpublish();
         
-        $form->sessionMessage(_t('CMSMain.REMOVEDPAGE', "Removed '{title}' from the published site", array('title'=>$record->Title)), 'good');
+        $form->sessionMessage(_t('SilverStripe\\CMS\\Controllers\\CMSMain.REMOVEDPAGE', "Removed '{title}' from the published site", array('title'=>$record->Title)), 'good');
         if($this->gridField->getList()->byId($this->record->ID)) {
             // Return new view, as we can't do a "virtual redirect" via the CMS Ajax
             // to the same URL (it assumes that its content is already current, and doesn't reload)
@@ -328,12 +351,12 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
         }
         
         if(!$record || !$record->ID) {
-            throw new SS_HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
+            throw new HTTPResponse_Exception("Bad record ID #" . (int)$data['ID'], 404);
         }
         
         $this->record=$record->duplicate();
         
-        $form->sessionMessage(_t('CMSMain.DUPLICATED', "Duplicated '{title}' successfully", array('title'=>$record->Title)), 'good');
+        $form->sessionMessage(_t('SilverStripe\\CMS\\Controllers\\CMSMain.DUPLICATED', "Duplicated '{title}' successfully", array('title'=>$record->Title)), 'good');
         
         if($this->record) {
             return $this->getToplevelController()->redirect(Controller::join_links($this->Link('edit'), (class_exists('Translatable') ? '?Locale='.$this->record->Locale:'')));

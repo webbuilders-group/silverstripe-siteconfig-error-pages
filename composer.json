@@ -1,26 +1,29 @@
 {
     "name": "webbuilders-group/silverstripe-siteconfig-error-pages",
     "description": "Moves the SilverStripe Error Page management from the page tree to Settings section.",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "keywords": ["silverstripe", "siteconfig", "error pages", "management"],
     "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Ed Chipman",
-            "homepage": "http://webbuildersgroup.com",
+            "homepage": "https://webbuildersgroup.com",
             "role": "Developer"
         }
     ],
     "require":
     {
-        "silverstripe/cms": "~3.3",
-        "webbuilders-group/silverstripe-gridfield-deleted-items": "*",
-        "composer/installers": "*"
+        "silverstripe/cms": "~4.0",
+        "silverstripe/errorpage": "~1.0",
+        "webbuilders-group/silverstripe-gridfield-deleted-items": "~2.0"
     },
     "support": {
         "issues": "https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/issues"
     },
     "extra": {
-        "installer-name": "siteconfig-error-pages"
+        "expose": [
+            "css",
+            "javascript"
+        ]
     }
 }

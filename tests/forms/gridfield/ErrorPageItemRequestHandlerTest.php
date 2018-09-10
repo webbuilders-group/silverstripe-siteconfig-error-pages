@@ -1,4 +1,9 @@
 <?php
+
+use SilverStripe\Security\SecurityToken;
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Dev\FunctionalTest;
 class ErrorPageItemRequestHandlerTest extends FunctionalTest {
     protected static $fixture_file='ErrorPageItemRequestHandlerTest.yml';
     
@@ -25,11 +30,11 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Make sure exists on the draft site
-        $errorPage=Versioned::get_by_stage('ErrorPage', 'Stage')
-                                                                ->filter('ID:not', $this->objFromFixture('ErrorPage', 'page404')->ID)
+        $errorPage=Versioned::get_by_stage(ErrorPage::class, 'Stage')
+                                                                ->filter('ID:not', $this->objFromFixture(ErrorPage::class, 'page404')->ID)
                                                                 ->first();
         
-        $this->assertInstanceOf('ErrorPage', $errorPage, 'Page does not exist on the draft site and it should');
+        $this->assertInstanceOf(ErrorPage::class, $errorPage, 'Page does not exist on the draft site and it should');
         $this->assertGreaterThan(0, $errorPage->ID, 'Page does not exist on the draft site and it should');
         $this->assertTrue($errorPage->exists(), 'Page does not exist on the draft site and it should');
         
@@ -47,7 +52,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find and publish the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         $errorPage->publish('Stage', 'Live');
         
         
@@ -65,8 +70,8 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Verify the page still exists on the draft site
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
-        $this->assertInstanceOf('ErrorPage', $errorPage, 'Page does not exist on the draft site and it should');
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
+        $this->assertInstanceOf(ErrorPage::class, $errorPage, 'Page does not exist on the draft site and it should');
         $this->assertGreaterThan(0, $errorPage->ID, 'Page does not exist on the draft site and it should');
         $this->assertTrue($errorPage->exists(), 'Page does not exist on the draft site and it should');
         
@@ -84,7 +89,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         
 
         $this->autoFollowRedirection=false;
@@ -97,8 +102,8 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Refetch the object
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
-        $this->assertInstanceOf('ErrorPage', $errorPage, 'Could not find the error page after saving');
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
+        $this->assertInstanceOf(ErrorPage::class, $errorPage, 'Could not find the error page after saving');
         $this->assertTrue($errorPage->exists(), 'Could not find the error page after saving');
         
         
@@ -115,7 +120,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         
         $this->assertFalse($errorPage->isPublished(), 'Page does exists on the live site and it should not prior to publish');
         
@@ -142,7 +147,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find and publish the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         $errorPage->publish('Stage', 'Live');
         
 
@@ -156,8 +161,8 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Refetch the object
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
-        $this->assertInstanceOf('ErrorPage', $errorPage, 'Could not find the error page after saving');
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
+        $this->assertInstanceOf(ErrorPage::class, $errorPage, 'Could not find the error page after saving');
         $this->assertTrue($errorPage->exists(), 'Could not find the error page after saving');
         
         
@@ -166,8 +171,8 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Fetch the live instance
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Live', '"SiteTree"."ID"='.$errorPage->ID);
-        $this->assertInstanceOf('ErrorPage', $errorPage, 'Could not find the error page on the live site after saving');
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Live', '"SiteTree"."ID"='.$errorPage->ID);
+        $this->assertInstanceOf(ErrorPage::class, $errorPage, 'Could not find the error page on the live site after saving');
         $this->assertTrue($errorPage->exists(), 'Could not find the error page on the live site after saving');
         
         
@@ -184,7 +189,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find and publish the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         $errorPage->publish('Stage', 'Live');
         $pageID=$errorPage->ID;
         
@@ -203,12 +208,12 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Verify the page still exists on the draft site
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$pageID);
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$pageID);
         $this->assertNull($errorPage, 'Page exists exist on the draft site and it should not after archiving');
         
         
         //Make sure it no longer exists on the published site
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Live', '"SiteTree"."ID"='.$pageID);
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Live', '"SiteTree"."ID"='.$pageID);
         $this->assertNull($errorPage, 'Page exists exist on the live site and it should not after archiving');
     }
     
@@ -221,7 +226,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Find and publish the error page
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         $pageID=$errorPage->ID;
         
         
@@ -235,7 +240,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Verify the page still exists on the draft site
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$pageID);
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$pageID);
         $this->assertNull($errorPage, 'Page exists exist on the draft site and it should not after archiving');
     }
     
@@ -251,14 +256,14 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         Versioned::reset();
         
         //Fetch the error page, publish it, then change the error code
-        $errorPage=$this->objFromFixture('ErrorPage', 'page404');
+        $errorPage=$this->objFromFixture(ErrorPage::class, 'page404');
         $errorPage->publish('Stage', 'Live');
         $errorPage->ErrorCode=400;
         $errorPage->write();
         
         
         //Re-fetch the error page
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
         $this->assertEquals(400, $errorPage->ErrorCode); //Sanity check
         
         
@@ -272,7 +277,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest {
         
         
         //Re-fetch the error page and make sure the code switched back to 404
-        $errorPage=Versioned::get_one_by_stage('ErrorPage', 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
+        $errorPage=Versioned::get_one_by_stage(ErrorPage::class, 'Stage', '"SiteTree"."ID"='.$errorPage->ID);
         $this->assertEquals(404, $errorPage->ErrorCode);
     }
 }

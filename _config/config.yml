@@ -1,28 +1,27 @@
 ---
 Name: siteconfig_error_pages
 After: 
-    - "framework/*"
-    - "cms/*"
+    - "#cmsdefaultadmin"
 ---
-CMSPageAddController:
+SilverStripe\CMS\Controllers\CMSPageAddController:
     extensions:
-        - "SiteConfigErrorPageCMSMain"
+        - WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigErrorPageCMSMain
 
 
-CMSPageEditController:
+SilverStripe\CMS\Controllers\CMSPageEditController:
     extensions:
-        - "SiteConfigErrorPageCMSMain"
+        - WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigErrorPageCMSMain
 
 
-CMSPageSettingsController:
+SilverStripe\CMS\Controllers\CMSPageSettingsController:
     extensions:
-        - "SiteConfigErrorPageCMSMain"
+        - WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigErrorPageCMSMain
 
 
-SiteConfig:
+SilverStripe\SiteConfig\SiteConfig:
     extensions:
-        - "SiteConfigErrorPagesExtension"
+        - WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigErrorPagesExtension
 
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
     hide_from_cms_tree:
-        - "ErrorPage"
+        - SilverStripe\ErrorPage\ErrorPage

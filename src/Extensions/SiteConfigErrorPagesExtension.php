@@ -1,4 +1,26 @@
 <?php
+namespace WebbuildersGroup\SiteConfigErrorPages\Extensions;
+
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_ActionMenu;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Versioned\Versioned;
+use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedColumns;
+use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedEditButton;
+use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedManipulator;
+use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedRestoreButton;
+use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedToggle;
+use WebbuildersGroup\SiteConfigErrorPages\Forms\GridField\ErrorPageItemRequestHandler;
+
+
 class SiteConfigErrorPagesExtension extends DataExtension {
     /**
      * Updates the CMS fields adding the fields defined in this extension
@@ -6,26 +28,26 @@ class SiteConfigErrorPagesExtension extends DataExtension {
      */
     public function updateCMSFields(FieldList $fields) {
         //Reset Versioned
-        Versioned::reading_stage('Stage');
+        Versioned::set_reading_mode('Stage.'.Versioned::DRAFT);
         
         
-        $fields->findOrMakeTab('Root.ErrorPages', _t('SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'));
-        $fields->addFieldToTab('Root.ErrorPages', $gridField=new GridField('ErrorPages', _t('SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'), ErrorPage::get(), GridFieldConfig_RecordEditor::create(10)));
+        $fields->findOrMakeTab('Root.ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'));
+        $fields->addFieldToTab('Root.ErrorPages', $gridField=new GridField('ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'), ErrorPage::get(), GridFieldConfig_RecordEditor::create(10)));
         $gridField->getConfig()
-                            ->removeComponentsByType('GridFieldDeleteAction')
-                            ->removeComponentsByType('GridFieldDataColumns')
-                            ->removeComponentsByType('GridFieldEditButton')
-                            ->addComponent(new GridFieldDeletedManipulator(), 'GridFieldToolbarHeader')
-                            ->addComponent(new GridFieldDeletedColumns())
-                            ->addComponent(new GridFieldDeletedEditButton())
-                            ->addComponent(new GridFieldDeletedRestoreButton())
+                            ->removeComponentsByType(GridFieldDeleteAction::class)
+                            ->removeComponentsByType(GridFieldDataColumns::class)
+                            ->removeComponentsByType(GridFieldEditButton::class)
+                            ->addComponent(new GridFieldDeletedManipulator(), GridFieldToolbarHeader::class)
+                            ->addComponent(new GridFieldDeletedColumns(), GridField_ActionMenu::class)
+                            ->addComponent(new GridFieldDeletedEditButton(), GridField_ActionMenu::class)
+                            ->addComponent(new GridFieldDeletedRestoreButton(), GridField_ActionMenu::class)
                             ->addComponent(new GridFieldDeletedToggle('buttons-before-left'))
-                            ->getComponentByType('GridFieldDataColumns')
+                            ->getComponentByType(GridFieldDataColumns::class)
                                 ->setDisplayFields(array(
-                                                        'Title'=>_t('SiteConfigErrorPagesExtension.PAGE_NAME', 'Page name'),
-                                                        'ErrorCode'=>_t('SiteConfigErrorPagesExtension.ERROR_CODE', 'Error Code'),
-                                                        'isPublished'=>_t('SiteConfigErrorPagesExtension.PUBLISHED', 'Published'),
-                                                        'IsModifiedOnStage'=>_t('SiteConfigErrorPagesExtension.MODIFIED', 'Modified')
+                                                        'Title'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PAGE_NAME', 'Page name'),
+                                                        'ErrorCode'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_CODE', 'Error Code'),
+                                                        'isPublished'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PUBLISHED', 'Published'),
+                                                        'IsModifiedOnStage'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.MODIFIED', 'Modified')
                                                     ))
                                 ->setFieldCasting(array(
                                                         'isPublished'=>'Boolean->Nice',
@@ -33,8 +55,8 @@ class SiteConfigErrorPagesExtension extends DataExtension {
                                                     ));
         
         $gridField->getConfig()
-                            ->getComponentByType('GridFieldDetailForm')
-                                ->setItemRequestClass('ErrorPageItemRequestHandler');
+                            ->getComponentByType(GridFieldDetailForm::class)
+                                ->setItemRequestClass(ErrorPageItemRequestHandler::class);
     }
 }
 ?>

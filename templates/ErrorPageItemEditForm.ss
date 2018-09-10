@@ -60,7 +60,7 @@
             
             <% if $Controller.LinkPreview %>
                 <a href="$Controller.LinkPreview" target="_cmsPreview" class="cms-preview-toggle-link ss-ui-button" data-icon="preview">
-                    <%t LeftAndMain.PreviewButton "_Preview" %> &raquo;
+                    <%t SilverStripe\\Admin\\LeftAndMain.PreviewButton "_Preview" %> &raquo;
                 </a>
                 
                 <% include LeftAndMain_ViewModeSelector SelectID="preview-mode-dropdown-in-content" %>

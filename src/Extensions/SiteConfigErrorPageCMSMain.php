@@ -1,4 +1,15 @@
 <?php
+namespace WebbuildersGroup\SiteConfigErrorPages\Extensions;
+
+use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Extension;
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\SiteConfig\SiteConfigLeftAndMain;
+
+
 class SiteConfigErrorPageCMSMain extends Extension {
     /**
      * Redirects the error pages to settings
@@ -16,7 +27,7 @@ class SiteConfigErrorPageCMSMain extends Extension {
     public function updatePageOptions(FieldList $fields) {
         $optionsField=$fields->dataFieldByName('PageType');
         if($optionsField) {
-            $optionsField->setSource(array_diff_key($optionsField->getSource(), ClassInfo::subclassesFor('ErrorPage')));
+            $optionsField->setSource(array_diff_key($optionsField->getSource(), ClassInfo::subclassesFor(ErrorPage::class)));
         }
     }
 }
