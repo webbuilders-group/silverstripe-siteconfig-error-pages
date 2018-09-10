@@ -21,6 +21,7 @@ use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
+use WebbuildersGroup\SiteConfigErrorPages\Control\Admin\CustomSiteConfigAdmin;
 
 
 class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {

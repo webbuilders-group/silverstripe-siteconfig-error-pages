@@ -21,7 +21,7 @@ use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedToggle;
 use WebbuildersGroup\SiteConfigErrorPages\Forms\GridField\ErrorPageItemRequestHandler;
 
 
-class SiteConfigErrorPagesExtension extends DataExtension {
+class SiteConfigExtension extends DataExtension {
     /**
      * Updates the CMS fields adding the fields defined in this extension
      * @param FieldList $fields Field List that new fields will be added to

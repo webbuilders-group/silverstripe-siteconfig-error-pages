@@ -10,7 +10,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\SiteConfig\SiteConfigLeftAndMain;
 
 
-class SiteConfigErrorPageCMSMain extends Extension {
+class CMSMainExtension extends Extension {
     /**
      * Redirects the error pages to settings
      */
