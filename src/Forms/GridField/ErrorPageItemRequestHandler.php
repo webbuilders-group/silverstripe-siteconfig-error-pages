@@ -2,6 +2,7 @@
 namespace WebbuildersGroup\SiteConfigErrorPages\Forms\GridField;
 
 use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\CMS\Controllers\CMSMain;
 use SilverStripe\CMS\Controllers\CMSPageAddController;
 use SilverStripe\CMS\Controllers\CMSPageHistoryController;
 use SilverStripe\CMS\Controllers\SilverStripeNavigator;
@@ -53,7 +54,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
                                         TabSet::create('Root',
                                                     new TabSet('Content', _t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.CONTENT', 'Content')),
                                                     new TabSet('Settings', _t('WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemRequestHandler.SETTINGS', 'Settings'))
-                                                )->setTemplate('CMSTabSet')
+                                                )->setTemplate('SilverStripe\\Forms\\CMSTabSet')
                                     ));
         
         $form->Fields()->addFieldsToTab('Root.Content', $editFields);
@@ -95,7 +96,10 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
             $form->Fields()->push($navField);
              
             $form->addExtraClass('cms-previewable');
-            $form->setTemplate('ErrorPageItemEditForm');
+            $form->setTemplate(array(
+                                    'type'=>'Includes',
+                                    'WebbuildersGroup\\SiteConfigErrorPages\\Forms\\GridField\\ErrorPageItemEditForm'
+                                ));
         }
         
         
@@ -383,7 +387,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest {
     protected function getSilverStripeNavigator($segment=null) {
         if($this->record) {
             $navigator=new SilverStripeNavigator($this->record);
-            return $navigator->renderWith('LeftAndMain_SilverStripeNavigator');
+            return $navigator->renderWith(singleton(CMSMain::class)->getTemplatesWithSuffix('_SilverStripeNavigator'));
         }else {
             return false;
         }

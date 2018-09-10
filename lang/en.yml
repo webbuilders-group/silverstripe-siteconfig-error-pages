@@ -1,11 +1,11 @@
 en:
-    SiteConfigErrorPagesExtension:
+    WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigErrorPagesExtension:
         ERROR_PAGES: "Error Pages"
         PAGE_NAMES: "Page name"
         ERROR_CODES: "Error Code"
         PUBLISHED: "Published"
         MODIFIED: "Modified"
-    ErrorPageItemRequestHandler:
+    WebbuildersGroup\SiteConfigErrorPages\Forms\GridField\ErrorPageItemRequestHandler:
         CONTENT: "Content"
         SETTINGS: "Settings"
         ARCHIVEDPAGE: "Archived error page '{title}'"

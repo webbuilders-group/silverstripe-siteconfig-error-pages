@@ -16,7 +16,7 @@ class SiteConfigErrorPageCMSMain extends Extension {
      */
     public function onAfterInit() {
         if($this->owner->currentPage() instanceof ErrorPage && !$this->owner->redirectedTo()) {
-            $this->owner->redirect(Controller::join_links(LeftAndMain::config()->url_base, SiteConfigLeftAndMain::config()->url_segment, 'EditForm/field/ErrorPages/item', $this->owner->currentPage()->ID, '/edit', (class_exists('Translatable') ? '?Locale='.$this->owner->currentPage()->Locale:'')));
+            $this->owner->redirect(Controller::join_links('admin', SiteConfigLeftAndMain::config()->url_segment, 'EditForm/field/ErrorPages/item', $this->owner->currentPage()->ID, '/edit'));
         }
     }
     
