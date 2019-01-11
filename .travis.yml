@@ -1,8 +1,6 @@
 language: php
 php:
-  - 5.6
-  - 7.0
-  - 7.1
+ - 5.6
 
 sudo: false
 
@@ -11,24 +9,25 @@ notifications:
     secure: "qi/DkZ/JeoyQElAvVvJOW6ZD53G9a6+M+S2uwOdseK/0tZcPIwV+xTY7MmsS7KC5AVjRztp5posoVUOoRhGFI1FjOZoPKIZ4pj69r9osqbO6yw4JQ13jrffy7EHxYng4Obx4O2m3s/pGVvr8mSM1mWvRUvqrUOPuWUClpvAuZkLl0PujDAtq7F1H3AQ8xUY1sj8uOeHX5V+8VslvFu1e3InezQmGHvJMM4wJ7kGNUF99e0vKryLtbdG84B4sv8MEpUgBhm6EPz4VkFMN5aqeH02pf2yz58Y8uJQroiSenG+VQqDfgR+7hly/07IosEQD5yz9hWfpWj03GwnW67XQw7kiUFeTA8U2lffhB7XqFAMZapiWfJ8Wu0hzS6vXN9+CvjdAcNketGU4456V28e6JIG36g26TCrrtn0lCBB2sqtEOKoVLkKsxFVhxXJvSMeFn+87nZPFoEMC8zleDI28sc+faK6wQG3QZq93pu6cRgtT3a0AfRXjicrETWwnahu0JY4T++OLK4woO6Ia+EJXNXGag1SKy4IYvJgXODZnMb9yNI4mU6JF8DbZlQcvNgA0vfeNSZagwRKMG7G0NNvCF8U/2bMuWZ4CkVqVBdyPxgxeDuO2QqgQ91HjDIMNZkw2MUqnvOLLUMqXCPX2W+a6orEVm5oBQmHLiwv7KmDdzl8="
 
 env:
-  - DB=MYSQL CORE_RELEASE=4.3
+  - DB=MYSQL
 
 matrix:
   include:
-    - php: 7.1
-      env: DB=PGSQL CORE_RELEASE=4.3
-    - php: 7.1
-      env: DB=SQLITE3 CORE_RELEASE=4.3
     - php: 5.6
-      env: DB=MYSQL CORE_RELEASE=4.2
+      env: DB=MYSQL
+    - php: 5.6
+      env: DB=PGSQL
+    - php: 5.6
+      env: DB=SQLITE3
 
 before_script:
   - composer self-update || true
   - composer validate
-  - composer require --no-update silverstripe/recipe-cms:"^$CORE_RELEASE" --prefer-dist
+  - composer require --no-update silverstripe/recipe-cms:^1.1 --prefer-dist
   - composer require --no-update phpunit/phpunit:^5.7 --prefer-dist
-  - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:~2.0 --prefer-dist --no-update; fi
-  - if [[ $DB == SQLITE ]]; then composer require silverstripe/sqlite3:~2.0 --prefer-dist --no-update; fi
+  - composer require --no-update webbuilders-group/silverstripe-gridfield-deleted-items:2.0.x-dev --prefer-dist
+  - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:2.0.x-dev --prefer-dist --no-update; fi
+  - if [[ $DB == SQLITE ]]; then composer require silverstripe/sqlite3:2.1.x-dev --prefer-dist --no-update; fi
   - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose
 
 script:
