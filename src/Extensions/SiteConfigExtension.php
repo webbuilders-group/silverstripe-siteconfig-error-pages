@@ -12,6 +12,7 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\Versioned\GridFieldArchiveAction;
 use SilverStripe\Versioned\Versioned;
 use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedColumns;
 use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedEditButton;
@@ -38,9 +39,9 @@ class SiteConfigExtension extends DataExtension {
                             ->removeComponentsByType(GridFieldDataColumns::class)
                             ->removeComponentsByType(GridFieldEditButton::class)
                             ->addComponent(new GridFieldDeletedManipulator(), GridFieldToolbarHeader::class)
-                            ->addComponent(new GridFieldDeletedColumns(), GridField_ActionMenu::class)
-                            ->addComponent(new GridFieldDeletedEditButton(), GridField_ActionMenu::class)
-                            ->addComponent(new GridFieldDeletedRestoreButton(), GridField_ActionMenu::class)
+                            ->addComponent(new GridFieldDeletedColumns(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
+                            ->addComponent(new GridFieldDeletedEditButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
+                            ->addComponent(new GridFieldDeletedRestoreButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
                             ->addComponent(new GridFieldDeletedToggle('buttons-before-left'))
                             ->getComponentByType(GridFieldDataColumns::class)
                                 ->setDisplayFields(array(
