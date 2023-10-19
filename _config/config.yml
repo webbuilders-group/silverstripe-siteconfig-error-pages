@@ -1,38 +1,32 @@
 ---
 Name: siteconfig_error_pages
-After: 
-    - "#cmsdefaultadmin"
+After:
+  - "#cmsdefaultadmin"
 ---
 SilverStripe\CMS\Controllers\CMSPageAddController:
-    extensions:
-        - WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension
-
+  extensions:
+    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
 
 SilverStripe\CMS\Controllers\CMSPageEditController:
-    extensions:
-        - WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension
-
+  extensions:
+    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
 
 SilverStripe\CMS\Controllers\CMSPageSettingsController:
-    extensions:
-        - WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension
-
+  extensions:
+    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
 
 SilverStripe\SiteConfig\SiteConfig:
-    extensions:
-        - WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigExtension
-
+  extensions:
+    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\SiteConfigExtension'
 
 SilverStripe\CMS\Model\SiteTree:
-    hide_from_cms_tree:
-        - SilverStripe\ErrorPage\ErrorPage
-
+  hide_from_cms_tree:
+    - 'SilverStripe\ErrorPage\ErrorPage'
 
 SilverStripe\ErrorPage\ErrorPage:
-    extensions:
-        - WebbuildersGroup\SiteConfigErrorPages\Extensions\ErrorPageExtension
-
+  extensions:
+    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\ErrorPageExtension'
 
 SilverStripe\Core\Injector\Injector:
-    SilverStripe\SiteConfig\SiteConfigLeftAndMain:
-        class: WebbuildersGroup\SiteConfigErrorPages\Control\Admin\CustomSiteConfigAdmin
+  SilverStripe\SiteConfig\SiteConfigLeftAndMain:
+    class: 'WebbuildersGroup\SiteConfigErrorPages\Control\Admin\CustomSiteConfigAdmin'

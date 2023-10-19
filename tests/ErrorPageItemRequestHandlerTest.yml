@@ -1,6 +1,6 @@
 SilverStripe\ErrorPage\ErrorPage:
-    page404:
-        Title: "Page not found"
-        MenuTitle: "Page not found"
-        Content: "<p>Requested page could not be found</p>"
-        ErrorCode: 404
+  page404:
+    Title: "Page not found"
+    MenuTitle: "Page not found"
+    Content: "<p>Requested page could not be found</p>"
+    ErrorCode: 404
