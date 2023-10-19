@@ -5,13 +5,14 @@ use SilverStripe\Control\Controller;
 use SilverStripe\CMS\Controllers\CMSMain;
 use SilverStripe\SiteConfig\SiteConfigLeftAndMain;
 
-
-class CustomSiteConfigAdmin extends SiteConfigLeftAndMain {
+class CustomSiteConfigAdmin extends SiteConfigLeftAndMain
+{
     /**
      * Render $PreviewPanel content
      * @return DBHTMLText
      */
-    public function PreviewPanel() {
+    public function PreviewPanel()
+    {
         $template = singleton(CMSMain::class)->getTemplatesWithSuffix('_PreviewPanel');
         
         // Only render sections with preview panel

@@ -21,43 +21,43 @@ use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedRestoreButton;
 use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedToggle;
 use WebbuildersGroup\SiteConfigErrorPages\Forms\GridField\ErrorPageItemRequestHandler;
 
-
-class SiteConfigExtension extends DataExtension {
+class SiteConfigExtension extends DataExtension
+{
     /**
      * Updates the CMS fields adding the fields defined in this extension
      * @param FieldList $fields Field List that new fields will be added to
      */
-    public function updateCMSFields(FieldList $fields) {
-        //Reset Versioned
-        Versioned::set_reading_mode('Stage.'.Versioned::DRAFT);
+    public function updateCMSFields(FieldList $fields)
+    {
+        // Reset Versioned
+        Versioned::set_reading_mode('Stage.' . Versioned::DRAFT);
         
         
         $fields->findOrMakeTab('Root.ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'));
-        $fields->addFieldToTab('Root.ErrorPages', $gridField=new GridField('ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'), ErrorPage::get(), GridFieldConfig_RecordEditor::create(10)));
+        $fields->addFieldToTab('Root.ErrorPages', $gridField = new GridField('ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'), ErrorPage::get(), GridFieldConfig_RecordEditor::create(10)));
         $gridField->getConfig()
                             ->removeComponentsByType(GridFieldDeleteAction::class)
                             ->removeComponentsByType(GridFieldDataColumns::class)
                             ->removeComponentsByType(GridFieldEditButton::class)
                             ->addComponent(new GridFieldDeletedManipulator(), GridFieldToolbarHeader::class)
-                            ->addComponent(new GridFieldDeletedColumns(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
-                            ->addComponent(new GridFieldDeletedEditButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
-                            ->addComponent(new GridFieldDeletedRestoreButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class:GridField_ActionMenu::class))
+                            ->addComponent(new GridFieldDeletedColumns(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class : GridField_ActionMenu::class))
+                            ->addComponent(new GridFieldDeletedEditButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class : GridField_ActionMenu::class))
+                            ->addComponent(new GridFieldDeletedRestoreButton(), (class_exists(GridFieldArchiveAction::class) ? GridFieldArchiveAction::class : GridField_ActionMenu::class))
                             ->addComponent(new GridFieldDeletedToggle('buttons-before-left'))
                             ->getComponentByType(GridFieldDataColumns::class)
-                                ->setDisplayFields(array(
-                                                        'Title'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PAGE_NAME', 'Page name'),
-                                                        'ErrorCode'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_CODE', 'Error Code'),
-                                                        'isPublished'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PUBLISHED', 'Published'),
-                                                        'IsModifiedOnStage'=>_t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.MODIFIED', 'Modified')
-                                                    ))
-                                ->setFieldCasting(array(
-                                                        'isPublished'=>'Boolean->Nice',
-                                                        'IsModifiedOnStage'=>'Boolean->Nice'
-                                                    ));
+                                ->setDisplayFields([
+                                                        'Title' => _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PAGE_NAME', 'Page name'),
+                                                        'ErrorCode' => _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_CODE', 'Error Code'),
+                                                        'isPublished' => _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.PUBLISHED', 'Published'),
+                                                        'IsModifiedOnStage' => _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.MODIFIED', 'Modified'),
+                                                    ])
+                                ->setFieldCasting([
+                                                        'isPublished' => 'Boolean->Nice',
+                                                        'IsModifiedOnStage' => 'Boolean->Nice',
+                                                    ]);
         
         $gridField->getConfig()
                             ->getComponentByType(GridFieldDetailForm::class)
                                 ->setItemRequestClass(ErrorPageItemRequestHandler::class);
     }
 }
-?>
