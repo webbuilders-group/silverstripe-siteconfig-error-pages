@@ -90,7 +90,7 @@ jobs:
       - name: Perform PHPUnit Tests
         env:
           SS_DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\VersionedHelpers\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
+        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\SiteConfigErrorPages\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
 
   silverstripe_413_php80:
     name: "Silverstripe 4.13 | PHP 8.0"
@@ -167,7 +167,7 @@ jobs:
       - name: Perform PHPUnit Tests
         env:
           SS_DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\VersionedHelpers\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
+        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\SiteConfigErrorPages\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
 
   silverstripe_413_php74:
     name: "Silverstripe 4.13 | PHP 7.4"
@@ -231,7 +231,6 @@ jobs:
         run: |
           composer self-update --ansi || true
           if [[ $GITHUB_ACCESS_TOKEN ]]; then composer config --ansi -g github-oauth.github.com $GITHUB_ACCESS_TOKEN; fi
-          composer require silverstripe/versioned 1.13.*
           composer install --verbose --no-interaction --no-progress --no-suggest --optimize-autoloader --ansi
 
       - name: Configure Environment
@@ -242,7 +241,7 @@ jobs:
       - name: Perform PHPUnit Tests
         env:
           SS_DATABASE_PORT: ${{ job.services.mysql.ports['3306'] }}
-        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\VersionedHelpers\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
+        run: vendor/bin/phpunit --colors=always --printer WebbuildersGroup\\SiteConfigErrorPages\\Tests\\Bootstrap\\GitHubActionsAnnotatorPrinter
 
   phpcs:
     name: "PHP_CodeSniffer"

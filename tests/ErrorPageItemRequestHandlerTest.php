@@ -58,7 +58,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
 
         // Find and publish the error page
         $errorPage = $this->objFromFixture(ErrorPage::class, 'page404');
-        $errorPage->publish(Versioned::DRAFT, Versioned::LIVE);
+        $errorPage->publishRecursive();
 
 
         // Make sure it exists on the published site
@@ -175,7 +175,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
 
         // Find and publish the error page
         $errorPage = $this->objFromFixture(ErrorPage::class, 'page404');
-        $errorPage->publish(Versioned::DRAFT, Versioned::LIVE);
+        $errorPage->publishRecursive();
 
 
         $this->autoFollowRedirection = false;
@@ -224,7 +224,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
 
         // Find and publish the error page
         $errorPage = $this->objFromFixture(ErrorPage::class, 'page404');
-        $errorPage->publish(Versioned::DRAFT, Versioned::LIVE);
+        $errorPage->publishRecursive();
         $pageID = $errorPage->ID;
 
 
@@ -305,7 +305,7 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
 
         // Fetch the error page, publish it, then change the error code
         $errorPage = $this->objFromFixture(ErrorPage::class, 'page404');
-        $errorPage->publish(Versioned::DRAFT, Versioned::LIVE);
+        $errorPage->publishRecursive();
         $errorPage->ErrorCode = 400;
         $errorPage->write();
 
