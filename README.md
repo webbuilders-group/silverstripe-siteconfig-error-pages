@@ -1,6 +1,6 @@
 SilverStripe SiteConfig Error Pages
 =================
-[![Build Status](https://travis-ci.org/webbuilders-group/silverstripe-siteconfig-error-pages.png?branch=master)](https://travis-ci.org/webbuilders-group/silverstripe-siteconfig-error-pages)
+[![CI](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/actions/workflows/ci.yml/badge.svg)](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/actions/workflows/ci.yml)
 
 Moves the SilverStripe Error Page management from the page tree to Settings section.
 

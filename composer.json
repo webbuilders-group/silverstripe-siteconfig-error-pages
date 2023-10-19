@@ -27,5 +27,11 @@
             "css",
             "javascript"
         ]
+    },
+    "autoload": {
+        "psr-4": {
+            "WebbuildersGroup\\SiteConfigErrorPages\\": "src/",
+            "WebbuildersGroup\\SiteConfigErrorPages\\Tests\\": "tests/"
+        }
     }
 }
