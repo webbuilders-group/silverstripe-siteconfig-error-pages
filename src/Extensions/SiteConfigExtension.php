@@ -1,6 +1,7 @@
 <?php
 namespace WebbuildersGroup\SiteConfigErrorPages\Extensions;
 
+use SilverStripe\Core\Extension;
 use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
@@ -11,7 +12,6 @@ use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\Versioned\GridFieldArchiveAction;
 use SilverStripe\Versioned\Versioned;
 use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedColumns;
@@ -21,7 +21,7 @@ use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedRestoreButton;
 use WebbuildersGroup\GridFieldDeletedItems\Forms\GridFieldDeletedToggle;
 use WebbuildersGroup\SiteConfigErrorPages\Forms\GridField\ErrorPageItemRequestHandler;
 
-class SiteConfigExtension extends DataExtension
+class SiteConfigExtension extends Extension
 {
     /**
      * Updates the CMS fields adding the fields defined in this extension
@@ -31,8 +31,8 @@ class SiteConfigExtension extends DataExtension
     {
         // Reset Versioned
         Versioned::set_reading_mode('Stage.' . Versioned::DRAFT);
-        
-        
+
+
         $fields->findOrMakeTab('Root.ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'));
         $fields->addFieldToTab('Root.ErrorPages', $gridField = new GridField('ErrorPages', _t('WebbuildersGroup\\SiteConfigErrorPages\\Extensions\\SiteConfigErrorPagesExtension.ERROR_PAGES', 'Error Pages'), ErrorPage::get(), GridFieldConfig_RecordEditor::create(10)));
         $gridField->getConfig()
@@ -55,7 +55,7 @@ class SiteConfigExtension extends DataExtension
                                                         'isPublished' => 'Boolean->Nice',
                                                         'IsModifiedOnStage' => 'Boolean->Nice',
                                                     ]);
-        
+
         $gridField->getConfig()
                             ->getComponentByType(GridFieldDetailForm::class)
                                 ->setItemRequestClass(ErrorPageItemRequestHandler::class);

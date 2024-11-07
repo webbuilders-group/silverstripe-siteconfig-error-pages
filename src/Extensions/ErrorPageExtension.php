@@ -2,11 +2,11 @@
 namespace WebbuildersGroup\SiteConfigErrorPages\Extensions;
 
 use SilverStripe\Control\Controller;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 use SilverStripe\SiteConfig\SiteConfigLeftAndMain;
 use SilverStripe\View\HTML;
 
-class ErrorPageExtension extends DataExtension
+class ErrorPageExtension extends Extension
 {
     public function MetaTags(&$tags)
     {

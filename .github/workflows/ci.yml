@@ -80,6 +80,7 @@ jobs:
           composer config allow-plugins.composer/installers true
           composer config allow-plugins.silverstripe/recipe-plugin true
           composer config allow-plugins.silverstripe/vendor-plugin true
+          composer silverstripe/recipe-cms ~5.3
           composer install --verbose --no-interaction --no-progress --no-suggest --optimize-autoloader --ansi
 
       - name: Configure Environment
@@ -157,6 +158,7 @@ jobs:
           composer config allow-plugins.composer/installers true
           composer config allow-plugins.silverstripe/recipe-plugin true
           composer config allow-plugins.silverstripe/vendor-plugin true
+          composer silverstripe/recipe-cms ~4.13
           composer install --verbose --no-interaction --no-progress --no-suggest --optimize-autoloader --ansi
 
       - name: Configure Environment
@@ -231,6 +233,7 @@ jobs:
         run: |
           composer self-update --ansi || true
           if [[ $GITHUB_ACCESS_TOKEN ]]; then composer config --ansi -g github-oauth.github.com $GITHUB_ACCESS_TOKEN; fi
+          composer silverstripe/recipe-cms ~4.13
           composer install --verbose --no-interaction --no-progress --no-suggest --optimize-autoloader --ansi
 
       - name: Configure Environment
