@@ -7,6 +7,7 @@ use SilverStripe\Core\Extension;
 use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\SiteConfig\SiteConfigLeftAndMain;
+use SilverStripe\VersionedAdmin\Controllers\CMSPageHistoryViewerController;
 
 class CMSMainExtension extends Extension
 {
@@ -15,7 +16,7 @@ class CMSMainExtension extends Extension
      */
     public function onAfterInit()
     {
-        if ($this->owner->currentRecord() instanceof ErrorPage && !$this->owner->redirectedTo()) {
+        if ($this->owner->currentRecord() instanceof ErrorPage && !$this->owner->redirectedTo() && !is_a($this->owner, CMSPageHistoryViewerController::class)) {
             $this->owner->redirect(Controller::join_links('admin', SiteConfigLeftAndMain::config()->url_segment, 'EditForm/field/ErrorPages/item', $this->owner->currentRecord()->ID, '/edit'));
         }
     }

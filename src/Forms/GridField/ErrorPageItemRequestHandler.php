@@ -130,7 +130,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
     {
         if ($this->record && !$this->record->exists()) {
             $addController = CMSMain::create();
-            $this->record = $addController->getNewItem('new-' . $this->config()->error_page_class);
+            $this->record = $addController->getNewItem('new-' . $this->config()->error_page_class, false);
 
             $form = $this->ItemEditForm();
             $this->extend('updateDoAdd', $this->record, $form);
