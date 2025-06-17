@@ -4,13 +4,11 @@ namespace WebbuildersGroup\SiteConfigErrorPages\Forms\GridField;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Admin\Navigator\SilverStripeNavigator;
 use SilverStripe\CMS\Controllers\CMSMain;
-use SilverStripe\CMS\Controllers\CMSPageAddController;
-use SilverStripe\CMS\Controllers\CMSPageHistoryController;
-use SilverStripe\CMS\Controllers\SilverStripeNavigator as LegacySSNavigator;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\HTTPResponse_Exception;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\ErrorPage\ErrorPage;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -19,7 +17,6 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\VersionedAdmin\Controllers\CMSPageHistoryViewerController;
@@ -62,8 +59,9 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
             )->setTemplate('SilverStripe\\Forms\\CMSTabSet')
         ));
 
-        $form->Fields()->addFieldsToTab('Root.Content', $editFields);
-        $form->Fields()->addFieldsToTab('Root.Settings', $this->record->getSettingsFields()->setForm($form)->fieldByName('Root')->Tabs());
+        $form->Fields()->findOrMakeTab('Root.Content')->setChildren($editFields);
+        $form->Fields()->findOrMakeTab('Root.Settings')->setChildren($this->record->getSettingsFields()->setForm($form)->fieldByName('Root')->Tabs());
+
 
 
         // Reload the data since we added the settings fields
@@ -100,7 +98,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
             'data-history-link',
             Controller::join_links(
                 LeftAndMain::config()->url_base,
-                (class_exists(CMSPageHistoryViewerController::class) ? CMSPageHistoryViewerController::config()->url_segment : CMSPageHistoryController::config()->url_segment),
+                CMSPageHistoryViewerController::config()->url_segment,
                 'show',
                 $this->record->ID
             )
@@ -108,7 +106,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
 
 
         // Add the navigator if it doesn't exist
-        $class = (class_exists(SilverStripeNavigator::class) ? SilverStripeNavigator::class : LegacySSNavigator::class);
+        $class = SilverStripeNavigator::class;
         if (!$form->Fields()->fieldByName($class)) {
             $navField = LiteralField::create($class, $this->getSilverStripeNavigator())->setForm($form)->setAllowHTML(true);
             $form->Fields()->push($navField);
@@ -131,8 +129,8 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
     public function edit($request)
     {
         if ($this->record && !$this->record->exists()) {
-            $addController = CMSPageAddController::create();
-            $this->record = $addController->getNewItem('new-' . $this->config()->error_page_class, false);
+            $addController = CMSMain::create();
+            $this->record = $addController->getNewItem('new-' . $this->config()->error_page_class);
 
             $form = $this->ItemEditForm();
             $this->extend('updateDoAdd', $this->record, $form);
@@ -298,7 +296,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
             throw new HTTPResponse_Exception('Bad record ID #' . $record->ID, 404);
         }
 
-        if (!$record->canArchive()) {
+        if (!$record->canDelete()) {
             return Security::permissionFailure();
         }
 
@@ -419,7 +417,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
     protected function getSilverStripeNavigator($segment = null)
     {
         if ($this->record) {
-            $class = (class_exists(SilverStripeNavigator::class) ? SilverStripeNavigator::class : LegacySSNavigator::class);
+            $class = SilverStripeNavigator::class;
             $navigator = new $class($this->record);
             return $navigator->renderWith(singleton(CMSMain::class)->getTemplatesWithSuffix('_SilverStripeNavigator'));
         } else {

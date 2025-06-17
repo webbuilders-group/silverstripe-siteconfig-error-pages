@@ -1,7 +1,6 @@
 <?php
 namespace WebbuildersGroup\SiteConfigErrorPages\Extensions;
 
-use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Extension;
@@ -16,11 +15,11 @@ class CMSMainExtension extends Extension
      */
     public function onAfterInit()
     {
-        if ($this->owner->currentPage() instanceof ErrorPage && !$this->owner->redirectedTo()) {
-            $this->owner->redirect(Controller::join_links('admin', SiteConfigLeftAndMain::config()->url_segment, 'EditForm/field/ErrorPages/item', $this->owner->currentPage()->ID, '/edit'));
+        if ($this->owner->currentRecord() instanceof ErrorPage && !$this->owner->redirectedTo()) {
+            $this->owner->redirect(Controller::join_links('admin', SiteConfigLeftAndMain::config()->url_segment, 'EditForm/field/ErrorPages/item', $this->owner->currentRecord()->ID, '/edit'));
         }
     }
-    
+
     /**
      * Removes the error page from the available page options
      * @param FieldList $fields Fields used in the Add Page form
