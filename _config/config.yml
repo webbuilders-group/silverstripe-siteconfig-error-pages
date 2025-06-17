@@ -3,15 +3,7 @@ Name: siteconfig_error_pages
 After:
   - "#cmsdefaultadmin"
 ---
-SilverStripe\CMS\Controllers\CMSPageAddController:
-  extensions:
-    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
-
-SilverStripe\CMS\Controllers\CMSPageEditController:
-  extensions:
-    - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
-
-SilverStripe\CMS\Controllers\CMSPageSettingsController:
+SilverStripe\CMS\Controllers\CMSMain:
   extensions:
     - 'WebbuildersGroup\SiteConfigErrorPages\Extensions\CMSMainExtension'
 
