@@ -65,12 +65,15 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $this->assertTrue($errorPage->isPublished(), 'Page does not exist on the live site and it should prior to unpublish');
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         // Unpublish the page and don't follow the redirect
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'action_unpublish' => 'Unpublish',
                     'SecurityID' => SecurityToken::getSecurityID(),
@@ -105,11 +108,14 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $errorPage = $this->objFromFixture(ErrorPage::class, 'page404');
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'ErrorCode' => 400,
                     'action_save' => 'Save Draft',
@@ -145,12 +151,15 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $this->assertFalse($errorPage->isPublished(), 'Page does exists on the live site and it should not prior to publish');
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         // Publish the page and don't follow the redirect
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'action_publish' => 'Save & publish',
                     'SecurityID' => SecurityToken::getSecurityID(),
@@ -178,11 +187,14 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $errorPage->publishRecursive();
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'ErrorCode' => 400,
                     'action_save' => 'Save Draft',
@@ -232,12 +244,15 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $this->assertTrue($errorPage->isPublished(), 'Page does not exist on the live site and it should prior to archiving');
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         // Archive the page and don't follow the redirect
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'action_archive' => 'Archive',
                     'SecurityID' => SecurityToken::getSecurityID(),
@@ -271,12 +286,15 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $pageID = $errorPage->ID;
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         // Archive the page and don't follow the redirect
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
                     'action_archive' => 'Archive',
                     'SecurityID' => SecurityToken::getSecurityID()
@@ -315,14 +333,17 @@ class ErrorPageItemRequestHandlerTest extends FunctionalTest
         $this->assertEquals(400, $errorPage->ErrorCode); // Sanity check
 
 
+        $data = $errorPage->toMap();
+        unset($data['ID']);
+
         // Revert the page and don't follow the redirect
         $this->autoFollowRedirection = false;
         $response = $this->post(
             'admin/settings/EditForm/field/ErrorPages/item/' . $errorPage->ID . '/ItemEditForm',
             array_merge(
-                $errorPage->toMap(),
+                $data,
                 [
-                    'action_rollback' => 'Cancel draft changes',
+                    'action_rollback' => '1',
                     'SecurityID' => SecurityToken::getSecurityID(),
                 ]
             )

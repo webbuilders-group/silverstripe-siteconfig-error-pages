@@ -262,6 +262,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
         }
 
         $record->doRevertToLive();
+        $this->record = $this->gridField->getList()->byID($recordID);
 
         $form->sessionMessage(_t(
             CMSMain::class . '.RESTORED',
