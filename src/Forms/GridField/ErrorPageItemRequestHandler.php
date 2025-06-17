@@ -87,7 +87,7 @@ class ErrorPageItemRequestHandler extends GridFieldDetailForm_ItemRequest
                 FormAction::create(
                     'doDuplicate',
                     _t(ErrorPageItemRequestHandler::class . '.DUPLICATE', '_Duplicate')
-                )->setAttribute('data-icon', 'no-icon')->setUseButtonTag(true)
+                )->addExtraClass('btn-secondary')->setUseButtonTag(true)
             );
         }
 
