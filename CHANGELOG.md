@@ -1,5 +1,8 @@
 # Change Log
 
+## [3.0.0](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/tree/3.0.0) (2025-06-26)
+[Full Changelog](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/compare/2.2.0...3.0.0)
+
 ## [2.2.0](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/tree/2.2.0) (2024-11-07)
 [Full Changelog](https://github.com/webbuilders-group/silverstripe-siteconfig-error-pages/compare/2.1.0...2.2.0)
 
